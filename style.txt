@@ -1,0 +1,60 @@
+/* Reset + Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to right, #e8f0ff, #ffffff);
+  color: #333;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+/* Header */
+header {
+  text-align: center;
+  padding: 40px 20px 20px;
+}
+header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+}
+header p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* Card sections */
+.card {
+  background: #ffffff;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.card h2 {
+  color: #4a90e2;
+  margin-bottom: 10px;
+}
+button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #357ab8;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  margin-top: 40px;
+  color: #777;
+}

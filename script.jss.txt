@@ -1,0 +1,15 @@
+const textarea = document.getElementById('noteInput');
+
+window.onload = () => {
+  textarea.value = localStorage.getItem('note') || '';
+};
+
+function saveNote() {
+  localStorage.setItem('note', textarea.value);
+  alert("Note saved!");
+}
+
+function clearNote() {
+  textarea.value = '';
+  localStorage.removeItem('note');
+}

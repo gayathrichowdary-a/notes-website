@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generative AI Notes</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>🧠 Generative AI Notes</h1>
+    <p>Your hub for deep learning, transformers, and more.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>📌 Start Uploading Topics</h2>
+      <p>This section will include topics like LLMs, GANs, Prompt Engineering, etc.</p>
+      <button>Upload Topic</button>
+    </section>
+
+    <section class="card">
+      <h2>📚 Topics Will Show Here</h2>
+      <p>Once uploaded, your notes or files will appear below.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Generative AI Notes</p>
+  </footer>
+</body>
+</html>
