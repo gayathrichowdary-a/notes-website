@@ -1,0 +1,188 @@
+# task-4 Rock paper scissors (RPS) game
+#!/usr/bin/env python3
+"""
+Unique Rock-Paper-Scissors (RPS) game
+Features:
+ - User input with validation (rock/paper/scissors or r/p/s)
+ - Secure random computer choice using secrets.choice
+ - Game logic to determine win/lose/tie
+ - Displays choices and result
+ - Score tracking across rounds
+ - Play-again loop
+ - Session ID added to make each run unique
+"""
+
+import secrets
+import time
+import os
+import sys
+from uuid import uuid4
+
+EMOJI = {"rock": "✊", "paper": "🖐", "scissors": "✌"}
+VALID = {"r": "rock", "p": "paper", "s": "scissors",
+         "rock": "rock", "paper": "paper", "scissors": "scissors"}
+
+# beats[a] == b means a beats b
+BEATS = {
+    "rock": "scissors",
+    "scissors": "paper",
+    "paper": "rock",
+}
+
+def clear_screen():
+    """Clear terminal screen for nicer UI (works on Windows/macOS/Linux)."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def secure_choice(options):
+    """Return a secure random choice from options (uses secrets)."""
+    return secrets.choice(options)
+
+def pretty_choice(name):
+    """Return a printable representation with emoji."""
+    emoji = EMOJI.get(name, "")
+    return f"{name.capitalize()} {emoji}"
+
+def prompt_user_choice():
+    """Prompt user until a valid choice is entered; returns canonical name."""
+    while True:
+        resp = input("Choose [rock (r) / paper (p) / scissors (s)]: ").strip().lower()
+        if not resp:
+            print("Please enter something (r, p, s or full word).")
+            continue
+        # Accept first character if user typed a word like 'rock' or just 'r'
+        resp_short = resp[0]
+        if resp in VALID:
+            return VALID[resp]
+        elif resp_short in VALID:
+            return VALID[resp_short]
+        else:
+            print("Invalid choice. Try again (rock/paper/scissors).")
+
+def decide_winner(user, comp):
+    """Return 'user', 'computer', or 'tie' based on choices."""
+    if user == comp:
+        return "tie"
+    if BEATS[user] == comp:
+        return "user"
+    return "computer"
+
+# ---------- Main game ----------
+def main():
+    # Unique session id to make this run distinctive
+    session_id = uuid4().hex[:8]
+    start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+    user_score = 0
+    comp_score = 0
+    rounds_played = 0
+    history = []  # store tuples (round, user_choice, comp_choice, result)
+
+    clear_screen()
+    print("="*48)
+    print("  Rock - Paper - Scissors   (Unique Session ID:", session_id, ")")
+    print("  Started at:", start_time)
+    print("="*48)
+    print("Instructions: type rock/paper/scissors or r/p/s. Type 'quit' to exit anytime.")
+    print()
+
+    # main loop
+    while True:
+        user_raw = input("Press Enter to play a round, or type 'quit' to stop: ").strip().lower()
+        if user_raw == "quit":
+            break
+
+        user_choice = prompt_user_choice()
+        comp_choice = secure_choice(list(BEATS.keys()))
+
+        rounds_played += 1
+        result = decide_winner(user_choice, comp_choice)
+
+        # Update scores
+        if result == "user":
+            user_score += 1
+            outcome_text = "You win!"
+        elif result == "computer":
+            comp_score += 1
+            outcome_text = "Computer wins!"
+        else:
+            outcome_text = "It's a tie!"
+
+        # Store history
+        history.append((rounds_played, user_choice, comp_choice, result))
+
+        # Display nicely
+        clear_screen()
+        print(f"Session: {session_id}   Round: {rounds_played}")
+        print("-"*48)
+        print("Your choice    :", pretty_choice(user_choice))
+        print("Computer choice:", pretty_choice(comp_choice))
+        print()
+        print("Result:", outcome_text)
+        print()
+        print(f"Score -> You: {user_score}   Computer: {comp_score}   Ties: {sum(1 for h in history if h[3]=='tie')}")
+        print("-"*48)
+
+        # Show a one-line commentary explaining why the winner won (educational)
+        if result != "tie":
+            winner = user_choice if result == "user" else comp_choice
+            loser = comp_choice if result == "user" else user_choice
+            reason = f"{pretty_choice(winner)} beats {pretty_choice(loser)}."
+            print("Why:", reason)
+        print()
+
+        # Offer to show quick history or continue
+        while True:
+            nxt = input("Type [h]istory, [c]ontinue, or [q]uit: ").strip().lower()
+            if nxt in ("h", "history"):
+                print("\nRound history (most recent last):")
+                for r, u, c, res in history:
+                    print(f" {r}. You: {u}  |  Comp: {c}  |  Result: {res}")
+                print()
+            elif nxt in ("c", "", "continue"):
+                break
+            elif nxt in ("q", "quit"):
+                print("Quitting the game...")
+                # print final summary and exit
+                clear_screen()
+                print("="*48)
+                print(" FINAL SUMMARY")
+                print("="*48)
+                print(f"Session ID: {session_id}")
+                print(f"Rounds played: {rounds_played}")
+                print(f"Your score: {user_score}")
+                print(f"Computer score: {comp_score}")
+                ties = sum(1 for h in history if h[3] == 'tie')
+                print(f"Ties: {ties}")
+                if user_score > comp_score:
+                    print("Overall: You are the champion! 🏆")
+                elif user_score < comp_score:
+                    print("Overall: Computer takes it. 🤖")
+                else:
+                    print("Overall: It's a draw. Well played!")
+                print("="*48)
+                sys.exit(0)
+            else:
+                print("Unknown option. Type h, c (or Enter), or q.")
+
+    # Final summary on exit
+    clear_screen()
+    print("="*48)
+    print(" GAME ENDED")
+    print("="*48)
+    print(f"Session ID: {session_id}")
+    print(f"Rounds played: {rounds_played}")
+    print(f"Your score: {user_score}")
+    print(f"Computer score: {comp_score}")
+    ties = sum(1 for h in history if h[3] == 'tie')
+    print(f"Ties: {ties}")
+    if user_score > comp_score:
+        print("Final result: You win overall. 🎉")
+    elif user_score < comp_score:
+        print("Final result: Computer wins overall. 🤖")
+    else:
+        print("Final result: Overall tie.")
+    print("Thanks for playing!")
+    print("="*48)
+
+if _name_ == "_main_":
+    main() 
